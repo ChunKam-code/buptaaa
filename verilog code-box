@@ -1,0 +1,33 @@
+module codeaa
+
+  (
+    input wire a1,a2,a3,a4,           //密码设为四位拨码开关
+    input wire key,				        //输入密码需要钥匙
+    output wire led1,    	        //开箱灯
+    output wire led2			       //报警灯
+  );
+wire  [3:0]   code;			         //code数组存储四位开箱密码
+reg			  open;			         //开箱信号(联系led1)
+reg			  alarm;                //报警信号(联系led2)
+assign		code = {a1,a2,a3,a4};
+ always@(key or code)
+if(key == 1'b0)             //模拟插入钥匙
+	begin
+		if(code == 4'b0000)    //正确密码是0000
+			begin
+				open = 1'b1;  //开锁
+				alarm = 1'b0; //没报警
+			end
+	   else              //有钥匙但是密码错误
+			begin
+			open = 1'b0;    //不开锁
+				alarm = 1'b1; //报警
+			end
+	end
+  else
+	begin
+		open = 1'b0;             //没有钥匙，不开锁，但不报警
+	end
+ assign  led1 = ~open;		//led1亮表示已打开
+ assign	led2 = ~alarm;		//led2亮表示报警
+endmodule
